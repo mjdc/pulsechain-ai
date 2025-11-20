@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Sparkles, RefreshCw, AlertCircle, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { MarketData, AIAnalysisResult } from '../types';
-import { generateMarketAnalysis } from '../app/actions';
 
 interface AIAnalystProps {
   data: MarketData;
@@ -12,12 +11,26 @@ interface AIAnalystProps {
 export const AIAnalyst: React.FC<AIAnalystProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<AIAnalysisResult | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
     setLoading(true);
     try {
-      const result = await generateMarketAnalysis(data);
-      setAnalysis(result);
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error('Analysis API error', err);
+        setAnalysis(null);
+        setErrorMessage(err && (err.error || err.detail) ? String(err.error || err.detail) : 'Analysis failed');
+      } else {
+        const result = await res.json();
+        setAnalysis(result as AIAnalysisResult);
+        setErrorMessage(null);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -43,6 +56,14 @@ export const AIAnalyst: React.FC<AIAnalystProps> = ({ data }) => {
       </div>
 
       {!analysis && !loading && (
+        errorMessage ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+            <div className="rounded-lg border border-red-600/30 bg-red-600/5 p-4">
+              <p className="text-sm text-red-300">{errorMessage}</p>
+              <button onClick={handleAnalyze} className="mt-2 rounded bg-red-600/10 px-3 py-1 text-xs text-red-200">Try again</button>
+            </div>
+          </div>
+        ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center text-slate-500">
             <div className="rounded-full bg-slate-800 p-4">
                 <Sparkles className="h-8 w-8 text-slate-600" />
@@ -51,6 +72,7 @@ export const AIAnalyst: React.FC<AIAnalystProps> = ({ data }) => {
             Click generate to fetch real-time news and perform technical analysis on {data.currency} using Gemini 2.5 Flash.
           </p>
         </div>
+        )
       )}
 
       {loading && (
@@ -87,7 +109,7 @@ export const AIAnalyst: React.FC<AIAnalystProps> = ({ data }) => {
             </div>
              <div>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Summary</span>
-                <p className="text-sm leading-relaxed text-slate-300 mt-1">
+                <p className="text-sm leading-relaxed text-slate-300 mt-1 lg:h-40 overflow-auto scrollbar-custom">
                 {analysis.summary}
                 </p>
              </div>
