@@ -1,5 +1,5 @@
 <div align="center">
-![GHBanner](/images/banner.jpg)
+![GHBanner](public/images/banner.jpg)
 </div>
 
 # PulseChain AI — Web3 Crypto Dashboard
