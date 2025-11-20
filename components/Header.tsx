@@ -22,13 +22,6 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
-          <a href="#" className="text-white hover:text-cyan-400 transition-colors">Dashboard</a>
-          <a href="#" className="hover:text-cyan-400 transition-colors">Exchange</a>
-          <a href="#" className="hover:text-cyan-400 transition-colors">NFTs</a>
-          <a href="#" className="hover:text-cyan-400 transition-colors">Earn</a>
-        </nav>
-
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-2 rounded-full bg-slate-800 px-3 py-1">
             <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
