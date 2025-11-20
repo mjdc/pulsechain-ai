@@ -1,0 +1,5 @@
+{
+  "name": "PulseChain AI Dashboard",
+  "description": "A high-performance Web3 crypto dashboard featuring live simulated market data for Bitcoin and Ethereum, integrated with Gemini AI for real-time market sentiment analysis and technical indicators.",
+  "requestFramePermissions": []
+}

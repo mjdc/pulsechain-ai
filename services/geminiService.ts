@@ -1,0 +1,1 @@
+// This file is deprecated. Logic has been moved to app/actions.ts for server-side security.
